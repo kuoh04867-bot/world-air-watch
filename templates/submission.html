@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>作業繳交資料｜世界空氣品質觀測站</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .submission { max-width: 880px; padding-bottom: 36px; }
+    .submission .hero { padding-bottom: 29px; }
+    .submission h1 { font-size: clamp(2rem, 6vw, 3.75rem); }
+    .document { padding: 21px 24px; margin-bottom: 14px; }
+    .document p { margin-top: 9px; color: var(--muted); line-height: 1.75; }
+    .document ul { margin: 10px 0 0; padding-left: 1.5rem; line-height: 1.9; }
+    .document a { color: #5738a4; text-underline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/" aria-label="返回世界空氣品質觀測站首頁">
+        <span class="brand-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        空氣觀測站
+      </a>
+      <nav aria-label="主要導覽"><a style="display: inline" href="/">觀測站首頁</a></nav>
+    </div>
+  </header>
+  <main class="wrap submission">
+    <section class="hero" aria-labelledby="title">
+      <div><p class="eyebrow"><span aria-hidden="true"></span> FLASK 課程專題</p>
+        <h1 id="title">世界空氣品質<span>觀測站</span></h1>
+        <p>作者 {{ author }} · 作業繳交資料</p></div>
+    </section>
+    <section class="panel document" aria-labelledby="links">
+      <h2 id="links">作品與原始碼</h2>
+      <ul>
+        <li><a href="/">Vercel 正式網站</a></li>
+        <li><a href="https://github.com/kuoh04867-bot/world-air-watch">GitHub 原始碼</a></li>
+        <li><a href="https://github.com/kuoh04867-bot/world-air-watch/commits/main/">GitHub 更新紀錄</a></li>
+      </ul>
+    </section>
+    <section class="panel document" aria-labelledby="evidence">
+      <h2 id="evidence">API 規格與驗證</h2>
+      <ul>
+        <li><a href="https://github.com/kuoh04867-bot/world-air-watch/blob/main/api-spec.md">API 規格卡與欄位對照</a></li>
+        <li><a href="https://github.com/kuoh04867-bot/world-air-watch/blob/main/verification.md">成功與失敗處理證據</a></li>
+        <li><a href="/api/health">健康檢查</a> · <a href="/api/air-quality?city=taipei">台北 API 查詢</a> · <a href="/api/air-quality?city=invalid">未知城市錯誤範例</a></li>
+      </ul>
+    </section>
+    <section class="panel document" aria-labelledby="reflection">
+      <h2 id="reflection">提示詞與學習反思</h2>
+      <p>瀏覽器發送請求到同一個網站的 Flask 路由，Flask 再向 Open-Meteo 取得模型資料。後端整理 JSON 欄位後，前端更新地圖、指數和走勢。</p>
+      <ul><li><a href="https://github.com/kuoh04867-bot/world-air-watch/blob/main/submission.md">三段關鍵提示詞與學習反思</a></li></ul>
+    </section>
+  </main>
+</body>
+</html>

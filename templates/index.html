@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="探索全球城市的空氣品質、US AQI、污染物與最近 24 小時走勢。">
+  <title>世界空氣品質觀測站</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/dashboard.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳至主要內容</a>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="/" aria-label="世界空氣品質觀測站首頁">
+        <span class="brand-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        空氣觀測站
+      </a>
+      <nav aria-label="主要導覽">
+        <a href="#overview">觀測總覽</a>
+        <a href="#cities">城市一覽</a>
+        <a href="#source">資料來源</a>
+      </nav>
+      <span class="top-tag">GLOBAL AIR WATCH</span>
+    </div>
+  </header>
+  <main class="wrap" id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <div class="eyebrow"><span aria-hidden="true"></span> GLOBAL AIR QUALITY</div>
+        <h1 id="page-title">世界空氣品質<span>觀測站</span></h1>
+        <p>探索全球城市的空氣品質指數、污染物濃度與每小時變化。</p>
+      </div>
+      <div class="hero-meta">
+        <span>資料來源</span>
+        <a href="https://open-meteo.com/en/docs/air-quality-api">Open-Meteo / CAMS</a>
+        <span>依城市座標提供的模型估算</span>
+      </div>
+    </section>
+
+    <section id="overview" class="workspace" aria-label="觀測總覽">
+      <div class="workspace-header">
+        <h2>觀測總覽</h2>
+        <form id="city-form">
+          <label for="city-select">選擇城市</label>
+          <div class="select-wrap">
+            <select id="city-select">
+              {% for city in cities %}
+              <option value="{{ city.id }}">{{ city.name }} · {{ city.english }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button class="primary" id="refresh" type="submit"><span aria-hidden="true">⟳</span> 更新資料</button>
+        </form>
+      </div>
+      <p id="request-status" class="sr-only" role="status"></p>
+      <noscript><p class="feedback">請啟用 JavaScript 以查詢城市空氣品質。</p></noscript>
+      <div class="main-grid">
+        <section class="map-panel" aria-labelledby="map-heading">
+          <div class="map-head">
+            <div><p>WORLD MAP</p><h3 id="map-heading">全球觀測地圖</h3></div>
+            <span class="map-hint">選擇地圖上的城市</span>
+          </div>
+          <div class="map-frame">
+            <canvas id="map" role="img" aria-label="世界海岸線地圖。各城市可透過地圖標記或上方選單選擇。"></canvas>
+            <div id="map-pins" class="map-pins"></div>
+            <p id="map-message" class="map-message" hidden>底圖暫時無法載入</p>
+          </div>
+          <div class="map-legend" aria-label="美國 AQI 等級圖例">
+            <span><i class="good"></i>良好</span>
+            <span><i class="moderate"></i>普通</span>
+            <span><i class="sensitive"></i>敏感族群</span>
+            <span><i class="unhealthy"></i>不健康</span>
+            <span><i class="very-unhealthy"></i>非常不健康</span>
+            <span><i class="hazardous"></i>危害</span>
+          </div>
+        </section>
+
+        <section class="panel reading" aria-labelledby="city-name" id="reading" aria-busy="true">
+          <div class="reading-head">
+            <div><p class="micro" id="city-region">亞洲 · 台灣</p><h3 id="city-name">台北</h3></div>
+            <span class="coordinates" id="city-coords">25.03°N &nbsp; 121.57°E</span>
+          </div>
+          <p id="feedback" class="feedback">載入空氣品質資料中…</p>
+          <div id="reading-data" hidden>
+            <div class="aqi-row">
+              <div><div class="aqi-label">美國空氣品質指數</div><div class="aqi-number" id="aqi-number">—</div></div>
+              <span class="level-pill" id="category"></span>
+            </div>
+            <div class="scale" aria-hidden="true">
+              <span class="good"></span><span class="moderate"></span><span class="sensitive"></span>
+              <span class="unhealthy"></span><span class="very-unhealthy"></span><span class="hazardous"></span>
+              <span id="scale-marker"></span>
+            </div>
+            <div class="scale-labels" aria-hidden="true"><span>0</span><span>50</span><span>100</span><span>150</span><span>200</span><span>300</span></div>
+            <dl class="pollutants">
+              <div><dt>PM2.5</dt><dd><b id="pm2_5">—</b> <span>µg/m³</span></dd></div>
+              <div><dt>PM10</dt><dd><b id="pm10">—</b> <span>µg/m³</span></dd></div>
+              <div><dt>臭氧 O₃</dt><dd><b id="ozone">—</b> <span>µg/m³</span></dd></div>
+              <div><dt>二氧化氮 NO₂</dt><dd><b id="nitrogen_dioxide">—</b> <span>µg/m³</span></dd></div>
+            </dl>
+          </div>
+          <div class="reading-footer">
+            <p id="time">US AQI</p>
+            <button id="retry" class="retry" type="button" hidden>再試一次</button>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel trend" aria-labelledby="trend-title">
+        <div class="section-head">
+          <div><h3 id="trend-title">近 24 小時趨勢</h3><p id="trend-caption">依城市當地時間顯示</p></div>
+          <span class="chart-key"><i></i> US AQI</span>
+        </div>
+        <p id="trend-status" class="trend-status">載入趨勢中…</p>
+        <div id="chart-wrap" class="chart-wrap" hidden>
+          <canvas id="chart" role="img" aria-label="近 24 小時美國空氣品質指數走勢。下方可展開逐時資料。"></canvas>
+        </div>
+        <details id="hourly-details" hidden>
+          <summary>查看逐時資料</summary>
+          <table><thead><tr><th scope="col">城市當地時間</th><th scope="col">US AQI</th></tr></thead><tbody id="hourly-rows"></tbody></table>
+        </details>
+      </section>
+    </section>
+
+    <section id="cities" class="city-section" aria-labelledby="cities-title">
+      <div class="section-head">
+        <div><h2 id="cities-title">城市一覽</h2><p>選擇城市查看完整空品資訊。</p></div>
+        <button id="overview-retry" type="button" class="retry" hidden>重新載入總覽</button>
+      </div>
+      <p id="overview-status" class="city-status" role="status">載入城市資料中…</p>
+      <div id="city-grid" class="city-grid">
+        {% for city in cities %}
+        <button class="city-card" type="button" data-city="{{ city.id }}" aria-pressed="false">
+          <span class="city-card-place"><small>{{ city.country }} · {{ city.region }}</small><strong>{{ city.name }}</strong><span>{{ city.english }}</span></span>
+          <span class="city-value"><b>—</b><small>US AQI</small></span>
+        </button>
+        {% endfor %}
+      </div>
+    </section>
+    <footer id="source" class="footer">
+      <div><strong>世界空氣品質觀測站</strong><p>作者 {{ author }}</p></div>
+      <div class="footer-right">
+        <p>模型估算來源 <a href="https://open-meteo.com/en/docs/air-quality-api">Open-Meteo</a> / <a href="https://atmosphere.copernicus.eu/">CAMS</a> · 底圖 <a href="https://www.naturalearthdata.com/">Natural Earth</a></p>
+        <p><a href="/api/health">健康檢查</a> · <a href="https://github.com/kuoh04867-bot/world-air-watch">GitHub 原始碼</a> · <a href="/submission">作業資料</a></p>
+      </div>
+    </footer>
+  </main>
+  <script id="city-data" type="application/json">{{ cities | tojson }}</script>
+</body>
+</html>
