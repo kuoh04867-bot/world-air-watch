@@ -6,6 +6,8 @@
 
 ## 課程繳交資料
 
+[作業繳交入口](https://world-air-watch.vercel.app/submission) · [Vercel 正式網站](https://world-air-watch.vercel.app/)
+
 - [API 規格卡與欄位對照](api-spec.md)
 - [成功與失敗處理的驗證證據](verification.md)
 - [三段提示詞與學習反思](submission.md)
@@ -59,6 +61,8 @@ python3.12 -m venv .venv
 | Build Command / Output Directory | 框架預設 |
 | Python 版本 | 根目錄 `.python-version` 指定 3.12 |
 | 環境變數 | 無 |
+
+本次以 GitHub 上的版本直接部署至 Vercel。若要讓推送自動觸發部署，Vercel 的 GitHub 整合須具有此儲存庫的存取權。
 
 Vercel 匯入根目錄 `app.py` 中的 `app` 物件。Flask 本機使用 `public/` 提供靜態檔案，Vercel 以相同的根路徑提供這些資產。Vercel Functions 有運行時間和包體限制。此專題只傳送精簡 JSON，由每次請求觸發查詢，無需常駐工作或本地持久儲存。
 

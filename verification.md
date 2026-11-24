@@ -41,3 +41,19 @@
 | 對重試按鈕按 Enter | 改用真實 API 成功回傳東京資料，顯示 US AQI 73，重試按鈕收起 |
 
 手機驗收在本機模擬一次 HTTP 504，模擬只用於測試。
+
+## Vercel 正式站驗收
+
+2026-11-24 約上午 11:02（台北時間），用無登入工作階段開啟正式站。Vercel 回報 Flask、Production、Ready，部署檔案來自 GitHub 版本 [a9d6351](https://github.com/kuoh04867-bot/world-air-watch/commit/a9d6351dc446bf7231153b065140855a4576e2bc)。
+
+| 正式站路徑 | HTTP | 當次回應摘要 |
+| --- | --- | --- |
+| `/` 與 `/submission` | 200 | 首頁與繳交資料頁，皆顯示作者 |
+| `/style.css`、`/dashboard.js`、`/world-coastlines.json` | 200 | 樣式、程式與底圖皆可載入 |
+| `/api/health` | 200 | `{"ok":true}` |
+| `/api/cities` | 200 | 十座城市均有 AQI |
+| `/api/air-quality?city=taipei` | 200 | US AQI 74，25 筆逐時資料 |
+| `/api/air-quality?city=london` | 200 | US AQI 53，25 筆逐時資料 |
+| `/api/air-quality?city=invalid` | 400 | `unknown_city` 與繁體中文提示 |
+
+使用瀏覽器開啟正式首頁，也確認地圖標記、台北四項污染物、AQI 與走勢均已呈現。[Vercel 正式網站](https://world-air-watch.vercel.app/)。
